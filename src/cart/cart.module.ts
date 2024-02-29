@@ -7,7 +7,6 @@ import { CartEntity } from './entities/cart.entity';
 import { ProductEntity } from 'src/product/entities/product.entity';
 import { ProductModule } from 'src/product/product.module';
 
-
 @Module({
   imports: [
     ConfigModule,
