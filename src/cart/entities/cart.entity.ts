@@ -1,4 +1,4 @@
-import { ApiHideProperty } from '@nestjs/swagger';
+//import { ApiHideProperty } from '@nestjs/swagger'; ??
 import { ProductEntity } from 'src/product/entities/product.entity';
 import {
   Column,
