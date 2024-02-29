@@ -21,5 +21,5 @@ export class CartController {
   //@Delete(':cart_id')
   //remove(@Param('cart_id') id: string) {
     //return this.cartService.remove(+cart_id)
-  }
+  //}
 }

@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { CreateCartDto } from './dto/create-cart.dto';
 import { UpdateCartDto } from './dto/update-cart.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -42,9 +42,9 @@ export class CartService {
     cart.quantity = quantity;
 
     return await this.cartRepository.save(cart);
-
-  //remove(id: number) {
-    //return this.cartRepository.delete(id);
-  //}
   }
-}
+  
+    remove(id: number) {
+    return this.cartRepository.delete(id);
+  }
+  }
