@@ -28,7 +28,7 @@ export class OrderController {
     return this.orderService.createOrder(createOrderDto);
   }
 
-  @Get()
+  @Get('all')
   findAll() {
     return this.orderService.findAll();
   }
