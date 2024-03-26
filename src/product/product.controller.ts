@@ -11,7 +11,7 @@ import {
   UploadedFile,
   Response,
 } from '@nestjs/common';
-import { ApiConsumes, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { ApiConsumes, ApiBearerAuth, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { DeleteResult } from 'typeorm';
 
@@ -20,13 +20,16 @@ import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { ProductEntity } from './entities/product.entity';
+import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 
 @ApiTags('product')
 @Controller('product')
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
 
-  @Post()
+  //@ApiBearerAuth()
+  @Post('new')
+  @ApiBearerAuth()
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(FileInterceptor('image', { storage: fileStorage }))
   create(
@@ -36,7 +39,11 @@ export class ProductController {
     return this.productService.create(dto, image);
   }
 
-  @Get()
+  @Get('/all')
+  AllProducts() {
+    return this.productService.AllProducts();
+  }
+  @Get('/allProductsByCategory')
   @ApiQuery({ name: 'categoryId', required: false })
   findAll(@Query('categoryId') categoryId: number): Promise<ProductEntity[]> {
     if (categoryId) return this.productService.findByCategoryId(categoryId);
@@ -53,6 +60,7 @@ export class ProductController {
     return this.productService.findOne(+id);
   }
 
+  @ApiBearerAuth()
   @Patch(':id')
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(FileInterceptor('image', { storage: fileStorage }))
@@ -64,6 +72,7 @@ export class ProductController {
     return this.productService.update(+id, dto, image);
   }
 
+  @ApiBearerAuth()
   @Delete(':id')
   delete(@Param('id') id: string): Promise<DeleteResult> {
     return this.productService.delete(+id);

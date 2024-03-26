@@ -26,8 +26,11 @@ export class ProductService {
     product.image = image.filename;
     product.name = dto.name;
     product.description = dto.description;
-    product.sizes = dto.sizes.split(',').map((x) => +x);
-    product.prices = dto.prices.split(',').map((x) => +x);
+    product.prices = dto.prices;
+    product.brand = dto.brand;
+    product.hashrate = dto.hashrate;
+    product.consumptionWatts = dto.consumptionWatts;
+    product.algorithm = dto.algorithm;
 
     const newProduct = await this.productRepository.save(product);
 
@@ -44,6 +47,9 @@ export class ProductService {
   }
 
   async findAll(): Promise<ProductEntity[]> {
+    return this.productRepository.find();
+  }
+  async AllProducts(): Promise<ProductEntity[]> {
     return this.productRepository.find();
   }
 
@@ -64,14 +70,21 @@ export class ProductService {
     dto: UpdateProductDto,
     image: Express.Multer.File,
   ): Promise<ProductEntity> {
-    const toUpdate = await this.productRepository.findOne({ where: { product_id } });
+    const toUpdate = await this.productRepository.findOne({
+      where: { product_id },
+    });
     if (!toUpdate) {
-      throw new BadRequestException(`Записи с product_id=${product_id} не найдено`);
+      throw new BadRequestException(
+        `Записи с product_id=${product_id} не найдено`,
+      );
     }
     if (dto.name) toUpdate.name = dto.name;
     if (dto.description) toUpdate.description = dto.description;
-    if (dto.sizes) toUpdate.sizes = dto.sizes.split(',').map((x) => +x);
-    if (dto.prices) toUpdate.prices = dto.prices.split(',').map((x) => +x);
+    if (dto.prices) toUpdate.prices = dto.prices;
+    if (dto.brand) toUpdate.brand = dto.brand;
+    if (dto.hashrate) toUpdate.hashrate = dto.hashrate;
+    if (dto.consumptionWatts) toUpdate.consumptionWatts = dto.consumptionWatts;
+    if (dto.algorithm) toUpdate.algorithm = dto.algorithm;
     if (dto.categoryId) {
       const category = await this.categoryRepository.findOne({
         where: { id: dto.categoryId },
@@ -97,4 +110,3 @@ export class ProductService {
     return this.productRepository.delete(product_id);
   }
 }
-

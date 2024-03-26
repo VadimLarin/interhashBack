@@ -11,14 +11,14 @@ import { UserId } from '../decorators/user-id.decorator';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  // @Post('register')
-  // create(@Body() createUserDto: CreateUserDto) {
-  //   return this.usersService.create(createUserDto);
-  // }
+  @Post('/register')
+  create(@Body() createUserDto: CreateUserDto) {
+    return this.usersService.create(createUserDto);
+  }
 
   @Get('me')
   @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard)
+  //@UseGuards(JwtAuthGuard)
   getMe(@UserId() id: number) {
     return this.usersService.findById(id);
   }

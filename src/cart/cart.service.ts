@@ -5,6 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CartEntity } from './entities/cart.entity';
 import { ProductEntity } from '../product/entities/product.entity';
+import { UserEntity } from '../users/entities/user.entity';
 
 @Injectable()
 export class CartService {
@@ -14,38 +15,74 @@ export class CartService {
     private readonly cartRepository: Repository<CartEntity>,
     @InjectRepository(ProductEntity)
     private readonly productRepository: Repository<ProductEntity>,
+    @InjectRepository(UserEntity)
+    private readonly usersRepository: Repository<UserEntity>,
   ) {}
 
-  create(dto: CreateCartDto) {
-    return this.cartRepository.save(dto);
-  }
+  //create(dto: CreateCartDto) {
+  //  //return this.cartRepository.save(dto); // каво чиво - ошибка дто
+  //}
 
   findAll() {
     return this.cartRepository.find();
   }
 
-  findOne(id: number) {
-    return this.cartRepository.findOneBy({ id });
+  findOne(cart_id: number) {
+    return this.cartRepository.findOneBy({ cart_id });
   }
 
-  async addToCart(productId: number, quantity: number): Promise<CartEntity> {
+  async findAllByUser(userId: number): Promise<CartEntity[]> {
+    return this.cartRepository.find({ where: { user_id: userId } });
+  }
+
+  async addToCart(dto: CreateCartDto): Promise<CartEntity> {
     const cart = new CartEntity();
+    cart.product_id = dto.product_id;
+    cart.quantity = dto.quantity;
+    //cart.total = dto.total;
 
     const product = await this.productRepository.findOne({
-      where: { product_id: productId },
+      where: { product_id: dto.product_id },
     });
-
     if (!product) {
-      throw new Error('Продукт не найден');
+      throw new Error('Product not found');
     }
 
-    cart.product = product;
-    cart.quantity = quantity;
-
-    return await this.cartRepository.save(cart);
+    cart.total = product.prices * dto.quantity;
+    return this.cartRepository.save(cart);
   }
 
-    remove(id: number) {
+  async updateQuantity(
+    quantity: number,
+    product_id: number,
+  ): Promise<{ quantity: number }> {
+    const existingCart = await this.cartRepository.findOne({
+      where: { product_id },
+    });
+    if (!existingCart) {
+      throw new Error(`Cart with product_id ${product_id} not found`);
+    }
+    await this.cartRepository.update({ product_id }, { quantity });
+
+    const product = await this.cartRepository.findOne({
+      where: { product_id },
+    });
+    return { quantity: product.quantity };
+  }
+
+  async updateTotalPrice(
+    total: number,
+    product_id: number,
+  ): Promise<{ total: number }> {
+    await this.cartRepository.update({ total }, { product_id });
+
+    const product = await this.cartRepository.findOne({
+      where: { product_id },
+    });
+    return { total: product.total };
+  }
+
+  async remove(id: number) {
     return this.cartRepository.delete(id);
   }
 
@@ -59,4 +96,7 @@ export class CartService {
     }
     return this.repository.save(toUpdate);
   }
-  }
+}
+function calculateTotal(price: number, quantity: number): number {
+  return price * quantity;
+}

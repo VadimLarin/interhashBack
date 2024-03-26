@@ -3,6 +3,7 @@ import { ProductEntity } from 'src/product/entities/product.entity';
 import {
   Column,
   CreateDateColumn,
+  UpdateDateColumn,
   Entity,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -18,6 +19,9 @@ export class CategoryEntity {
 
   @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;
+
+  @UpdateDateColumn({ type: 'timestamp' })
+  updatedAt: Date;
 
   @ApiHideProperty()
   @OneToMany(() => ProductEntity, (product) => product.category)

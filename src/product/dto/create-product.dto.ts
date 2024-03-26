@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-inferrable-types */
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsNumber, IsNumberString } from 'class-validator';
+import { IsString, IsNumberString } from 'class-validator';
 
 export class CreateProductDto {
   @ApiProperty({
@@ -15,17 +15,26 @@ export class CreateProductDto {
   image: Express.Multer.File;
 
   @IsString()
-  name: string = 'Название пиццы';
+  name: string = 'Antminer S19 90Th';
 
   @IsString()
-  description: string = 'Состав';
-
-  @IsString()
-  sizes: string = '20,30,40';
-
-  @IsString()
-  prices: string = '400,599,700';
+  description: string = 'оно майнит 300к ₽ в наносекунду';
 
   @IsNumberString()
-  categoryId: number;
+  categoryId: number = 1;
+
+  @IsNumberString()
+  prices: number = 25600;
+
+  @IsString()
+  brand: string = 'Bitmain';
+
+  @IsNumberString()
+  hashrate: number = 9050;
+
+  @IsNumberString()
+  consumptionWatts: number = 3300;
+
+  @IsString()
+  algorithm: string;
 }
