@@ -14,6 +14,8 @@ import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { Roles } from 'src/decorators/role.decorator';
+import { RolesGuard } from 'src/auth/guards/roles.guard';
 
 @ApiTags('order')
 @ApiBearerAuth()
@@ -22,12 +24,16 @@ export class OrderController {
   constructor(private readonly orderService: OrderService) {}
 
   @Post('new')
-  //@UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   create(@Body() createOrderDto: CreateOrderDto) {
     return this.orderService.createOrder(createOrderDto);
   }
 
+  @Roles('admin')
+  @UseGuards(RolesGuard)
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   @Get('all')
   findAll() {
     return this.orderService.findAll();
@@ -38,16 +44,20 @@ export class OrderController {
     return this.orderService.findOne(+id);
   }
 
-  @Patch(':id')
-  //@UseGuards(JwtAuthGuard)
+  @Roles('admin')
+  @UseGuards(RolesGuard)
+  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
+  @Patch(':id')
   update(@Param('id') id: string, @Body() updateOrderDto: UpdateOrderDto) {
     return this.orderService.updateOrder(+id, updateOrderDto);
   }
 
-  @Delete(':id')
-  //@UseGuards(JwtAuthGuard)
+  @Roles('admin')
+  @UseGuards(RolesGuard)
+  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
+  @Delete(':id')
   remove(@Param('id') id: string) {
     return this.orderService.delete(+id);
   }

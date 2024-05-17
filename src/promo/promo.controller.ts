@@ -22,15 +22,19 @@ import { PromoEntity } from './entities/promo.entity';
 import { DeleteResult } from 'typeorm';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 import { ApiBearerAuth } from '@nestjs/swagger';
+import { Roles } from 'src/decorators/role.decorator';
+import { RolesGuard } from 'src/auth/guards/roles.guard';
 
 @ApiTags('promo')
 @Controller('promo')
 export class PromoController {
   constructor(private readonly promoService: PromoService) {}
 
-  @Post('new')
-  //@UseGuards(JwtAuthGuard)
+  @Roles('admin')
+  @UseGuards(RolesGuard)
+  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
+  @Post('new')
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(FileInterceptor('image', { storage: fileStorage }))
   create(
@@ -55,9 +59,11 @@ export class PromoController {
     return this.promoService.findOne(+id);
   }
 
-  @Patch(':id')
-  //@UseGuards(JwtAuthGuard)
+  @Roles('admin')
+  @UseGuards(RolesGuard)
+  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
+  @Patch(':id')
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(FileInterceptor('image', { storage: fileStorage }))
   update(
@@ -68,9 +74,11 @@ export class PromoController {
     return this.promoService.update(+id, dto, image);
   }
 
-  @Delete(':id')
-  //@UseGuards(JwtAuthGuard)
+  @Roles('admin')
+  @UseGuards(RolesGuard)
+  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
+  @Delete(':id')
   remove(@Param('id') id: string): Promise<DeleteResult> {
     return this.promoService.delete(+id);
   }

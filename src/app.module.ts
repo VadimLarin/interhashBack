@@ -11,6 +11,7 @@ import { AuthModule } from './auth/auth.module';
 import { CartModule } from './cart/cart.module';
 import { OrderModule } from './order/order.module';
 import { FastOrderModule } from './fast-order/fast-order.module';
+import { RoleModule } from './role/role.module';
 
 @Module({
   imports: [
@@ -40,6 +41,7 @@ import { FastOrderModule } from './fast-order/fast-order.module';
     CartModule,
     OrderModule,
     FastOrderModule,
+    RoleModule,
   ],
   controllers: [],
   providers: [],

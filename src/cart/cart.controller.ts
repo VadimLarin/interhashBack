@@ -14,6 +14,8 @@ import { CreateCartDto } from './dto/create-cart.dto';
 import { UpdateCartDto } from './dto/update-cart.dto';
 import { ApiBearerAuth, ApiHideProperty, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
+import { Roles } from 'src/decorators/role.decorator';
+import { RolesGuard } from 'src/auth/guards/roles.guard';
 
 @ApiTags('cart')
 @ApiBearerAuth()
@@ -29,9 +31,11 @@ export class CartController {
     return this.cartService.addToCart(dto);
   }
 
-  @Get('/all')
-  //@UseGuards(JwtAuthGuard)
+  @Roles('admin')
+  @UseGuards(RolesGuard)
+  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
+  @Get('/all')
   findAll() {
     return this.cartService.findAll();
   }
@@ -43,13 +47,16 @@ export class CartController {
     return this.cartService.findOne(+id);
   }
 
-  @Get('user/:userId')
-  //@UseGuards(JwtAuthGuard)
+  @Roles('admin')
+  @UseGuards(RolesGuard)
+  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
+  @Get('user/:userId')
   async findAllByUser(@Param('userId') userId: number): Promise<CartEntity[]> {
     return this.cartService.findAllByUser(userId);
   }
 
+  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @Patch(':id')
   //@UseGuards(JwtAuthGuard)
@@ -58,9 +65,9 @@ export class CartController {
     return this.cartService.update(+id, updateCategoryDto);
   }
 
-  @Delete(':id')
-  //@UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
+  @Delete(':id')
   remove(@Param('id') id: number) {
     return this.cartService.remove(+id);
   }

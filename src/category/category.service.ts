@@ -46,17 +46,21 @@ export class CategoryService {
     return this.repository.save(toUpdate);
   }
 
-  async remove(id: number): Promise<void> {
-    const category = await this.repository.findOne({ where: { id } });
-    if (!category) {
-      throw new NotFoundException('Категория не найдена');
-    }
+  //async delete(id: number): Promise<void> {
+  //  const category = await this.repository.findOne({ where: { id } });
+  //  if (!category) {
+  //    throw new NotFoundException('Категория не найдена');
+  //  }
 
-    await this.productRepository.update(
-      { category: category.id },
-      { category: 0 },
-    );
+  //  await this.productRepository.update(
+  //    { category: category.id },
+  //    { category: 0 },
+  //  );
 
-    await this.categoryRepository.delete(id);
+  //  return this.categoryRepository.delete(id);
+  //}
+
+  async delete(id: number) {
+    return this.repository.delete(id);
   }
 }

@@ -7,12 +7,14 @@ import { ProductEntity } from './entities/product.entity';
 import { CategoryModule } from 'src/category/category.module';
 import { CategoryEntity } from 'src/category/entities/category.entity';
 import { CategoryService } from 'src/category/category.service';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [
     ConfigModule,
     TypeOrmModule.forFeature([ProductEntity, CategoryEntity]),
     CategoryModule,
+    JwtModule,
   ],
   controllers: [ProductController],
   providers: [ProductService],

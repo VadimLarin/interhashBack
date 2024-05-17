@@ -1,8 +1,10 @@
 import { OrderItemEntity } from 'src/order/entities/orderitem.entity';
+import { Role } from 'src/role/entities/role.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
+  ManyToOne,
   OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -19,6 +21,8 @@ export class UserEntity {
   @Column()
   password: string;
 
+  @ManyToOne(() => Role, (role) => role.user)
+  role: Role;
   //@Column()
   //cart_id: number;
   @OneToOne(() => OrderItemEntity, (orderItem) => orderItem.users)

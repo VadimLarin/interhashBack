@@ -14,6 +14,8 @@ import { UpdateFastOrderDto } from './dto/update-fast-order.dto';
 import { fastOrderEntity } from './entities/fast-order.entity';
 import { FastOrderDto } from './dto/fast-order.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
+import { Roles } from 'src/decorators/role.decorator';
+import { RolesGuard } from 'src/auth/guards/roles.guard';
 
 @ApiTags('fast-order')
 @Controller('fast-order')
@@ -30,23 +32,29 @@ export class FastOrderController {
   //create(@Body() createFastOrderDto: CreateFastOrderDto) {
   //  return this.fastOrderService.create(createFastOrderDto);
   //}
-
-  @Get('/all')
-  //@UseGuards(JwtAuthGuard)
+  @Roles('admin')
+  @UseGuards(RolesGuard)
+  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
+  @Get('/all')
   findAll() {
     return this.fastOrderService.findAll();
   }
 
+  @Roles('admin')
+  @UseGuards(RolesGuard)
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   @Get('/:id')
-  //@UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   findOne(@Param('id') id: string) {
     return this.fastOrderService.findOne(+id);
   }
 
   //при обновлении конечную цену нужно рассчитывать самостоятельно
-  //@UseGuards(JwtAuthGuard)
+  @Roles('admin')
+  @UseGuards(RolesGuard)
+  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @Patch('/:id')
   update(
@@ -56,7 +64,9 @@ export class FastOrderController {
     return this.fastOrderService.update(+id, updateFastOrderDto);
   }
 
-  //@UseGuards(JwtAuthGuard)
+  @Roles('admin')
+  @UseGuards(RolesGuard)
+  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @Delete('/:id')
   remove(@Param('id') id: string) {

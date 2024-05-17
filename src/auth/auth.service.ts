@@ -9,6 +9,7 @@ import { ConfigService } from '@nestjs/config';
 import { UserEntity } from '../users/entities/user.entity';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { UsersService } from '../users/users.service';
+import { use } from 'passport';
 
 @Injectable()
 export class AuthService {
@@ -20,6 +21,7 @@ export class AuthService {
 
   async validateUser(username: string, password: string): Promise<any> {
     const user = await this.usersService.findByUsername(username);
+    console.log(user);
 
     if (user && user.password === password) {
       const { password, ...result } = user;
@@ -39,7 +41,7 @@ export class AuthService {
       const userData = await this.usersService.create(dto);
 
       return {
-        token: this.jwtService.sign({ id: userData.id }),
+        token: this.jwtService.sign({ id: userData.id, role: userData.role }),
       };
     } catch (err) {
       // throw new ForbiddenException('Ошибка при регистрации');
@@ -48,8 +50,9 @@ export class AuthService {
   }
 
   async login(user: UserEntity) {
+    //console.log(user);
     return {
-      token: this.jwtService.sign({ id: user.id }),
+      token: this.jwtService.sign({ id: user.id, role: user.role }),
     };
   }
 }
